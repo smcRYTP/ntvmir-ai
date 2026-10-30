@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление контентом - НТВ Мир</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Tahoma, Arial, sans-serif; font-size: 11px; color: #333; line-height: 1.2; background: repeating-linear-gradient(90deg, #5cb85c, #5cb85c 2px, #4cae4c 2px, #4cae4c 4px); background-attachment: fixed; min-height: 100vh; display: flex; flex-direction: column; }
+        a { text-decoration: none; color: #003399; }
+        a:hover { text-decoration: underline; color: #ff0000; }
+        ul { list-style: none; }
+        .wrapper { width: 100%; max-width: 1400px; margin: 0 auto; background: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.6); border-left: 1px solid #333; border-right: 1px solid #333; flex: 1; display: flex; flex-direction: column; }
+        
+        /* ШАПКА */
+        .header { position: relative; display: flex; background: #003399; height: 90px; }
+        .logo-container { height: 100%; background: #fff; display: flex; align-items: center; z-index: 5; border-right: 1px solid #ccc; flex-shrink: 0; }
+        .logo-full { width: 115px; height: 100%; object-fit: contain; display: block; }
+        .header-image-container { flex: 1; height: 100%; position: relative; overflow: hidden; background: #003399; }
+        .header-link { display: inline-block; position: absolute; left: 0; top: 0; height: 55px; z-index: 2; cursor: pointer; }
+        .header-bg-img { height: 55px; width: auto; display: block; object-fit: contain; object-position: left top; }
+        .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 35px; background: #4caf50; display: flex; align-items: center; border-top: 1px solid #3d8b40; border-bottom: 1px solid #3d8b40; z-index: 3; padding-left: 120px; }
+        .nav-menu { display: flex; height: 100%; }
+        .nav-menu li { padding: 0 15px; border-right: 1px solid #3d8b40; display: flex; align-items: center; }
+        .nav-menu li:last-child { border-right: none; }
+        .nav-menu a { color: #fff; font-weight: bold; font-size: 10px; text-transform: uppercase; text-shadow: 1px 1px 0 rgba(0,0,0,0.2); }
+        
+        .country-bar { height: 22px; background: linear-gradient(to bottom, #a0c4e8, #8cb4d8); display: flex; align-items: center; justify-content: flex-end; padding-right: 15px; color: #fff; font-weight: bold; font-size: 10px; border-bottom: 1px solid #ccc; }
+        .country-bar span { margin: 0 5px; }
+        .country-bar .arrow { color: #ff0000; font-size: 8px; }
+        
+        .main-layout { display: flex; background: #fff; flex: 1; }
+        .left-col { width: 200px; padding: 10px; border-right: 1px solid #ccc; flex-shrink: 0; background: #f9f9f9; }
+        .search-title { color: #004080; font-size: 10px; font-weight: bold; margin-bottom: 5px; border-bottom: 1px solid #ccc; padding-bottom: 2px; }
+        .search-form { display: flex; border: 1px solid #666; padding: 1px; background: #fff; margin-bottom: 10px; }
+        .search-form input { border: none; width: 100%; height: 16px; outline: none; }
+        .search-form button { width: 16px; height: 16px; border: 1px solid #666; background: #e0e0e0; cursor: pointer; }
+        
+        .center-col { flex: 1; padding: 15px 20px; background: #fff; }
+        .section-head { background: linear-gradient(to bottom, #4a90e2, #0055a5); color: #fff; font-weight: bold; font-size: 12px; padding: 5px 10px; border-radius: 8px 8px 0 0; text-transform: uppercase; border: 1px solid #003366; border-bottom: none; margin-bottom: 15px; }
+
+        /* СТИЛИ ДЛЯ ФОРМЫ НАСТРОЕК */
+        .settings-form { border: 1px solid #ccc; background: #f9f9f9; padding: 20px; border-radius: 0 0 5px 5px; }
+        .form-row { display: flex; align-items: center; margin-bottom: 15px; }
+        .form-row label { width: 200px; font-weight: bold; font-size: 12px; }
+        .form-row input[type="file"] { flex: 1; font-family: Tahoma, Arial, sans-serif; font-size: 11px; }
+        
+        .save-btn { background: linear-gradient(to bottom, #6fcf6f, #4caf50); color: #fff; font-weight: bold; font-size: 12px; padding: 8px 20px; border: 1px solid #3d8b40; border-radius: 4px; cursor: pointer; text-shadow: 1px 1px 0 rgba(0,0,0,0.2); }
+        .save-btn:hover { background: linear-gradient(to bottom, #7fe07f, #5cc85c); }
+        .save-btn:disabled { opacity: 0.7; cursor: wait; }
+        
+        .success-msg { color: #009933; font-weight: bold; margin-top: 15px; display: none; }
+
+        /* ФУТЕР */
+        .footer { background: #104e8b; color: #a0c4e8; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; border-top: 2px solid #003366; margin-top: 20px; }
+        .footer-left { width: 250px; line-height: 1.4; }
+        .footer-left strong { color: #fff; font-size: 12px; }
+        .footer-center { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .footer-links { margin-bottom: 10px; display: flex; justify-content: center; gap: 10px; }
+        .footer-links a { color: #fff; text-decoration: underline; font-size: 11px; }
+        .footer-links a:hover { color: #ffcc00; }
+        .footer-partners img { height: 35px; width: auto; display: block; }
+        .footer-right { background: #4a7ebb; padding: 10px 20px; border-radius: 5px; text-align: center; border: 1px solid #6b9e6b; width: 300px; }
+        .footer-phone { color: #fff; font-size: 20px; font-weight: bold; font-family: Arial, sans-serif; margin-bottom: 2px; }
+        .footer-phone-text { color: #d0e4ff; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    
+    <!-- ШАПКА -->
+    <div class="header">
+        <div class="logo-container">
+            <!-- ID для предпросмотра -->
+            <img src="../ntvmir.png" id="preview-logo" class="logo-full" alt="НТВ МИР">
+        </div>
+        <div class="header-image-container">
+            <a href="https://t.me/smcNightik" target="_blank" class="header-link">
+                <!-- ID для предпросмотра -->
+                <img src="../t-1234.png" id="preview-header" class="header-bg-img" alt="Смотрите лучшее из России">
+            </a>
+        </div>
+        <div class="nav-bar">
+            <ul class="nav-menu">
+                <li><a href="about.html">О КОМПАНИИ</a></li>
+                <li><a href="schedule.html">ТЕЛЕПРОГРАММА</a></li>
+                <li><a href="support.html">СЛУЖБА ПОДДЕРЖКИ</a></li>
+                <li><a href="forum.html">ФОРУМ</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ПОЛОСКА СТРАНЫ -->
+    <div class="country-bar">
+        <span>США</span> <span class="arrow">▶</span> <span>ЕВРОПА</span>
+    </div>
+
+    <!-- КОНТЕНТ -->
+    <div class="main-layout">
+        
+        <!-- ЛЕВАЯ КОЛОНКА -->
+        <div class="left-col">
+            <div class="search-title">ПОИСК ПО САЙТУ | КАРТА САЙТА</div>
+            <div class="search-form">
+                <input type="text">
+                <button>▶</button>
+            </div>
+            <div class="block-box" style="padding: 10px; background: #fff; border: 1px solid #ccc;">
+                <p style="font-size: 11px;">Выберите файлы ниже. Предпросмотр обновится мгновенно (ещё до нажатия кнопки "Сохранить").</p>
+            </div>
+        </div>
+
+        <!-- ЦЕНТРАЛЬНАЯ ЧАСТЬ (Настройки) -->
+        <div class="center-col">
+            
+            <div class="section-head">УПРАВЛЕНИЕ КОНТЕНТОМ САЙТА</div>
+            
+            <div class="settings-form">
+                
+                <!-- Логотип (событие onchange) -->
+                <div class="form-row">
+                    <label>Логотип (НТВ+МИР):</label>
+                    <input type="file" id="cfg-logo" accept="image/*" onchange="previewImage(this, 'preview-logo')">
+                </div>
+
+                <!-- Картинка шапки -->
+                <div class="form-row">
+                    <label>Картинка шапки (баннер):</label>
+                    <input type="file" id="cfg-header" accept="image/*" onchange="previewImage(this, 'preview-header')">
+                </div>
+
+                <!-- Картинка партнеров -->
+                <div class="form-row">
+                    <label>Картинка партнеров (футер):</label>
+                    <input type="file" id="cfg-reklama" accept="image/*" onchange="previewImage(this, 'preview-reklama')">
+                </div>
+
+                <!-- Видео на главной (1-й блок) -->
+                <div class="form-row">
+                    <label>Видео на главной (блок 1):</label>
+                    <input type="file" id="cfg-video" accept="video/mp4" onchange="previewVideo(this)">
+                </div>
+
+                <!-- Ссылка на ТГ -->
+                <div class="form-row">
+                    <label>Ссылка на ТГ (шапка):</label>
+                    <input type="text" id="cfg-tg" placeholder="https://t.me/smcNightik" style="padding: 5px; border: 1px solid #999;" oninput="updateTgLink()">
+                </div>
+
+                <!-- Блок предпросмотра видео (появляется, если выбрано видео) -->
+                <div id="video-preview-container" style="display:none; margin-bottom: 20px;">
+                    <p style="font-weight: bold; margin-bottom: 5px;">Предпросмотр видео:</p>
+                    <video id="preview-video" controls style="width: 100%; max-width: 400px; border: 1px solid #999;"></video>
+                </div>
+
+                <button class="save-btn" id="saveBtn" onclick="saveSettings()">Сохранить изменения</button>
+                <div class="success-msg" id="successMsg">✔ Файлы сохранены! Перейдите на главную, чтобы увидеть результат.</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ФУТЕР -->
+    <footer class="footer">
+        <div class="footer-left">
+            <strong>© 2002 НТВ-МИР</strong><br>
+            ПРИ ИСПОЛЬЗОВАНИИ МАТЕРИАЛОВ<br>
+            ССЫЛКА НА НТВ-МИР ОБЯЗАТЕЛЬНА
+        </div>
+        <div class="footer-center">
+            <div class="footer-links">
+                <a href="../index.html">Главная</a> |
+                <a href="about.html">О компании</a> |
+                <a href="schedule.html">Телепрограмма</a> |
+                <a href="support.html">Служба поддержки</a> |
+                <a href="forum.html">Форум</a>
+            </div>
+            <div class="footer-partners">
+                <img src="../reklama.png" id="preview-reklama" alt="Партнеры">
+            </div>
+        </div>
+        <div class="footer-right">
+            <div class="footer-phone">+49 69 904756-0</div>
+            <div class="footer-phone-text">ЕВРОПЕЙСКИЙ ИНФОРМАЦИОННЫЙ ЦЕНТР</div>
+        </div>
+    </footer>
+
+</div>
+
+<script>
+    // Загружаем сохраненные настройки (если они есть) при открытии страницы
+    window.onload = function() {
+        // Ссылка на ТГ
+        document.getElementById('cfg-tg').value = localStorage.getItem('cfg_tg') || 'https://t.me/smcNightik';
+        
+        // Подтягиваем сохраненные картинки из памяти (если они уже были загружены ранее)
+        if (localStorage.getItem('cfg_logo')) document.getElementById('preview-logo').src = localStorage.getItem('cfg_logo');
+        if (localStorage.getItem('cfg_header')) document.getElementById('preview-header').src = localStorage.getItem('cfg_header');
+        if (localStorage.getItem('cfg_reklama')) document.getElementById('preview-reklama').src = localStorage.getItem('cfg_reklama');
+        
+        // Если было сохранено видео, показываем его в предпросмотре
+        if (localStorage.getItem('cfg_video')) {
+            const vidContainer = document.getElementById('video-preview-container');
+            const vidElem = document.getElementById('preview-video');
+            vidContainer.style.display = 'block';
+            vidElem.src = localStorage.getItem('cfg_video');
+        }
+    };
+
+    // Функция для мгновенного предпросмотра картинок
+    function previewImage(input, imgId) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById(imgId).src = e.target.result;
+            };
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    // Функция для предпросмотра видео
+    function previewVideo(input) {
+        if (input.files && input.files[0]) {
+            const file = input.files[0];
+            const fileURL = URL.createObjectURL(file);
+            
+            const vidContainer = document.getElementById('video-preview-container');
+            const vidElem = document.getElementById('preview-video');
+            
+            vidContainer.style.display = 'block';
+            vidElem.src = fileURL;
+        }
+    }
+
+    // Обновление ссылки на ТГ
+    function updateTgLink() {
+        // В данном случае просто визуально, в HTML ссылка в шапке - это <a> тег, но мы пока не меняем href напрямую в превью,
+        // так как это всего лишь демонстрация. При сохранении применится.
+    }
+
+    // Функция для конвертации в Base64 (нужна для сохранения в localStorage)
+    function getBase64(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+    }
+
+    // СОХРАНЕНИЕ
+    async function saveSettings() {
+        localStorage.setItem('cfg_tg', document.getElementById('cfg-tg').value);
+
+        const btn = document.getElementById('saveBtn');
+        const logoFile = document.getElementById('cfg-logo').files[0];
+        const headerFile = document.getElementById('cfg-header').files[0];
+        const reklamaFile = document.getElementById('cfg-reklama').files[0];
+        const videoFile = document.getElementById('cfg-video').files[0];
+
+        if (videoFile) { btn.innerText = 'Загрузка видео...'; btn.disabled = true; }
+
+        try {
+            if (logoFile) {
+                const base64 = await getBase64(logoFile);
+                localStorage.setItem('cfg_logo', base64);
+            }
+            if (headerFile) {
+                const base64 = await getBase64(headerFile);
+                localStorage.setItem('cfg_header', base64);
+            }
+            if (reklamaFile) {
+                const base64 = await getBase64(reklamaFile);
+                localStorage.setItem('cfg_reklama', base64);
+            }
+            if (videoFile) {
+                const base64 = await getBase64(videoFile);
+                localStorage.setItem('cfg_video', base64);
+            }
+
+            const msg = document.getElementById('successMsg');
+            msg.style.display = 'block';
+            setTimeout(() => { msg.style.display = 'none'; }, 4000);
+
+        } catch (error) {
+            alert('Ошибка при загрузке файла. Возможно, файл слишком большой.');
+        } finally {
+            btn.innerText = 'Сохранить изменения';
+            btn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>

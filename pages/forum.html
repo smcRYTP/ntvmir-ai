@@ -155,11 +155,13 @@
             </div>
 
             <div class="auth-block" id="profileBlock" style="display:none;">
-                <h3>ПРОФИЛЬ</h3>
+                <h3>ПРОФИЛЬ <span id="adminBadge" class="admin-badge" style="display:none;">ADMIN</span></h3>
+
                 <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
                     <div class="msg-avatar" id="profileAvatar" style="width:50px; height:50px;">?</div>
                     <div><strong id="profileNameDisplay">Пользователь</strong><br><span style="font-size:10px; color:#666;" id="profileEmailDisplay"></span></div>
                 </div>
+
                 <div class="profile-edit">
                     <label style="font-size:10px;">Изменить имя:</label>
                     <input type="text" id="editName" placeholder="Новое имя">
@@ -167,9 +169,12 @@
                     <input type="file" id="editAvatar" accept="image/*">
                     <button class="auth-btn" onclick="saveProfile()">Сохранить</button>
                 </div>
+
+                <button class="auth-btn" id="adminUnbanBtn" style="display:none; background:#ffcccc; margin-top:10px;" onclick="promptUnban()">Разбанить пользователя</button>
+
                 <button class="auth-btn" onclick="logoutUser()" style="margin-top:10px;">Выйти</button>
             </div>
-
+                    
             <div class="poll-block">
                 <h3>ОПРОС</h3>
                 <p>Какой жанр, на Ваш взгляд, представлен на нашем телеканале лучше всего?</p>
@@ -279,6 +284,7 @@
             .then(() => { alert('Пользователь разбанен!'); })
             .catch((error) => { alert('Ошибка: ' + error.message); });
     };
+
     window.promptUnban = function() {
         const uid = prompt('Введите UID пользователя для разбана:');
         if (uid) {

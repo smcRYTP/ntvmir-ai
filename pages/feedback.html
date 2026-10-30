@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Обратная связь - НТВ Мир</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Tahoma, Arial, sans-serif; font-size: 11px; color: #333; line-height: 1.2; background: repeating-linear-gradient(90deg, #5cb85c, #5cb85c 2px, #4cae4c 2px, #4cae4c 4px); background-attachment: fixed; min-height: 100vh; }
+        a { text-decoration: none; color: #003399; }
+        a:hover { text-decoration: underline; color: #ff0000; }
+        ul { list-style: none; }
+        .wrapper { width: 100%; max-width: 1400px; margin: 0 auto; background: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.6); border-left: 1px solid #333; border-right: 1px solid #333; min-height: 100vh; display: flex; flex-direction: column; }
+        
+        /* ШАПКА */
+        .header { position: relative; display: flex; background: #003399; height: 90px; }
+        .logo-container { height: 100%; background: #fff; display: flex; align-items: center; z-index: 5; border-right: 1px solid #ccc; flex-shrink: 0; }
+        .logo-full { width: 115px; height: 100%; object-fit: contain; display: block; }
+        .header-image-container { flex: 1; height: 100%; position: relative; overflow: hidden; background: #003399; }
+        .header-bg-img { height: 55px; width: auto; display: block; object-fit: contain; object-position: left top; position: absolute; left: 0; top: 0; }
+        .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 35px; background: #4caf50; display: flex; align-items: center; border-top: 1px solid #3d8b40; border-bottom: 1px solid #3d8b40; z-index: 3; padding-left: 120px; }
+        .nav-menu { display: flex; height: 100%; }
+        .nav-menu li { padding: 0 15px; border-right: 1px solid #3d8b40; display: flex; align-items: center; }
+        .nav-menu li:last-child { border-right: none; }
+        .nav-menu a { color: #fff; font-weight: bold; font-size: 10px; text-transform: uppercase; text-shadow: 1px 1px 0 rgba(0,0,0,0.2); }
+        
+        .country-bar { height: 22px; background: linear-gradient(to bottom, #a0c4e8, #8cb4d8); display: flex; align-items: center; justify-content: flex-end; padding-right: 15px; color: #fff; font-weight: bold; font-size: 10px; border-bottom: 1px solid #ccc; }
+        .country-bar span { margin: 0 5px; }
+        .country-bar .arrow { color: #ff0000; font-size: 8px; }
+        
+        .main-layout { display: flex; flex: 1; }
+        .left-col { width: 200px; background: #fff; padding: 10px; flex-shrink: 0; border-right: 1px solid #eee; }
+        .search-title { color: #666; font-size: 10px; margin-bottom: 5px; }
+        .search-form { display: flex; border: 1px solid #999; padding: 1px; background: #fff; margin-bottom: 15px; }
+        .search-form input { border: none; width: 100%; height: 16px; outline: none; }
+        .search-form button { width: 16px; height: 16px; border: 1px solid #999; background: #e0e0e0; cursor: pointer; }
+        
+        .left-menu { background: #e0e0e0; padding: 5px; margin-bottom: 15px; border: 1px solid #ccc; }
+        .left-menu a { display: block; color: #004080; font-weight: bold; padding: 4px 0; border-bottom: 1px solid #ccc; font-size: 11px; }
+        .left-menu a:last-child { border-bottom: none; }
+        .left-menu a:hover { background: #d0d0d0; }
+        .left-menu a.active { background: #d0d0d0; }
+        
+        .poll-block { background: linear-gradient(to bottom, #8cb4d8, #6a9bc8); padding: 10px; color: #fff; border: 1px solid #5a8bb8; }
+        .poll-block h3 { font-size: 12px; margin-bottom: 10px; font-weight: bold; }
+        .poll-block p { margin-bottom: 10px; font-size: 11px; }
+        .poll-option { display: flex; align-items: center; margin-bottom: 5px; font-size: 11px; }
+        .poll-option input { margin-right: 5px; }
+        .poll-btn { background: #e0e0e0; border: 1px solid #999; border-radius: 3px; padding: 2px 8px; font-size: 10px; color: #333; margin-top: 5px; cursor: pointer; float: right; }
+        
+        .right-content { flex: 1; padding: 15px 20px; background: #fff; }
+        .breadcrumbs { font-size: 11px; color: #666; margin-bottom: 10px; text-align: right; }
+        .breadcrumbs a { color: #003399; text-decoration: none; }
+        .breadcrumbs a:hover { text-decoration: underline; }
+        
+        .page-header { text-align: right; margin-bottom: 5px; }
+        .page-header img { height: 40px; width: auto; display: inline-block; vertical-align: middle; }
+        
+        .section-head { background: linear-gradient(to bottom, #4a90e2, #0055a5); color: #fff; font-weight: bold; font-size: 11px; padding: 4px 10px; border-radius: 8px 8px 0 0; text-transform: uppercase; border: 1px solid #003366; border-bottom: none; margin-bottom: 15px; }
+        
+        .feedback-form { display: flex; justify-content: space-between; }
+        .form-fields { width: 450px; font-size: 11px; }
+        .form-row { display: flex; align-items: flex-start; margin-bottom: 10px; }
+        .form-row label { width: 120px; padding-top: 3px; color: #333; }
+        .form-row input[type="text"], .form-row input[type="email"], .form-row select, .form-row textarea { width: 100%; border: 1px solid #999; padding: 3px; font-family: Tahoma, Arial, sans-serif; font-size: 11px; outline: none; }
+        .form-row textarea { height: 80px; resize: vertical; }
+        
+        .submit-row { margin-left: 120px; display: flex; align-items: center; }
+        .submit-btn { background: transparent; border: none; color: #003399; font-family: Tahoma, Arial, sans-serif; font-size: 11px; cursor: pointer; display: flex; align-items: center; gap: 5px; text-decoration: underline; }
+        .submit-btn img { width: 16px; height: 16px; }
+        
+        .form-warning { width: 200px; font-size: 10px; color: #000; padding-top: 5px; }
+        .form-warning span { color: #ff0000; font-weight: bold; }
+        
+        .footer { background: #104e8b; color: #a0c4e8; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; border-top: 2px solid #003366; margin-top: auto; }
+        .footer-left { width: 250px; line-height: 1.4; }
+        .footer-left strong { color: #fff; font-size: 12px; }
+        .footer-center { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .footer-links { margin-bottom: 10px; display: flex; justify-content: center; gap: 10px; }
+        .footer-links a { color: #fff; text-decoration: underline; font-size: 11px; }
+        .footer-links a:hover { color: #ffcc00; }
+        .footer-partners img { height: 35px; width: auto; display: block; }
+        .footer-right { background: #4a7ebb; padding: 10px 20px; border-radius: 5px; text-align: center; border: 1px solid #6b9e6b; width: 300px; }
+        .footer-phone { color: #fff; font-size: 20px; font-weight: bold; font-family: Arial, sans-serif; margin-bottom: 2px; }
+        .footer-phone-text { color: #d0e4ff; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        @media (max-width: 900px) {
+            .main-layout { flex-direction: column; }
+            .left-col { width: 100%; border-right: none; border-bottom: 1px solid #ccc; }
+            .footer { flex-direction: column; gap: 20px; text-align: center; }
+            .footer-left { width: 100%; }
+            .footer-right { width: 100%; }
+            .header { height: auto; flex-direction: column; }
+            .nav-bar { position: relative; padding-left: 0; }
+            .nav-menu { flex-wrap: wrap; }
+            .header-bg-img { position: relative; width: 100%; height: auto; }
+            .feedback-form { flex-direction: column; }
+            .form-fields { width: 100%; }
+            .form-warning { width: 100%; margin-top: 15px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    
+    <!-- ШАПКА (ПУТЬ ../ к PNG) -->
+    <div class="header">
+        <div class="logo-container">
+            <img src="../ntvmir.PNG" class="logo-full" alt="НТВ МИР">
+        </div>
+        <div class="header-image-container">
+            <img src="../t-1234.PNG" class="header-bg-img" alt="Шапка">
+        </div>
+        <div class="nav-bar">
+            <ul class="nav-menu">
+                <li><a href="about.html">О КОМПАНИИ</a></li>
+                <li><a href="schedule.html">ТЕЛЕПРОГРАММА</a></li>
+                <li><a href="support.html">СЛУЖБА ПОДДЕРЖКИ</a></li>
+                <li><a href="forum.html">ФОРУМ</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ПОЛОСКА СТРАНЫ -->
+    <div class="country-bar">
+        <span>США</span> <span class="arrow">▶</span> <span>ЕВРОПА</span>
+    </div>
+
+    <!-- МАКЕТ -->
+    <div class="main-layout">
+        
+        <div class="left-col">
+            <div class="search-title">ПОИСК ПО САЙТУ | КАРТА САЙТА</div>
+            <div class="search-form">
+                <input type="text">
+                <button>▶</button>
+            </div>
+
+            <div class="left-menu">
+                <a href="about.html">Наши партнеры</a>
+                <a href="press.html">Пресс-центр</a>
+                <a href="feedback.html" class="active">Обратная связь</a>
+                <a href="press-about.html">Пресса об НТВ Мир</a>
+            </div>
+
+            <div class="poll-block">
+                <h3>ОПРОС</h3>
+                <p>Какой жанр, на Ваш взгляд, представлен на нашем телеканале лучше всего?</p>
+                <label class="poll-option"><input type="radio" name="poll"> Российские телесериалы и художественные фильмы</label>
+                <label class="poll-option"><input type="radio" name="poll"> Ток-шоу и телевизионные интервью</label>
+                <label class="poll-option"><input type="radio" name="poll"> Информационно-аналитические программы</label>
+                <label class="poll-option"><input type="radio" name="poll"> Передачи о спорте</label>
+                <label class="poll-option"><input type="radio" name="poll"> Документальные фильмы</label>
+                <button class="poll-btn">ПРОГОЛОСОВАТЬ</button>
+                <div style="clear:both;"></div>
+            </div>
+        </div>
+
+        <div class="right-content">
+            <div class="breadcrumbs">
+                <a href="about.html">О компании</a> / Обратная связь
+            </div>
+
+            <!-- ЛОГОТИП РАЗДЕЛА (GIF в папке pages) -->
+            <div class="page-header">
+                <img src="ttl.gif" alt="О компании">
+            </div>
+
+            <div class="section-head">ОБРАТНАЯ СВЯЗЬ</div>
+
+            <form class="feedback-form" action="#" method="POST">
+                <div class="form-fields">
+                    <div class="form-row">
+                        <label>ФИО</label>
+                        <input type="text" name="fio">
+                    </div>
+                    <div class="form-row">
+                        <label>E-mail<span style="color:red;">*</span></label>
+                        <input type="email" name="email" required>
+                    </div>
+                    <div class="form-row">
+                        <label>Кому адресовано<span style="color:red;">*</span></label>
+                        <select name="target" required>
+                            <option value="redakcia">Редакции</option>
+                            <option value="admin">Администрации</option>
+                            <option value="tech">Техподдержке</option>
+                        </select>
+                    </div>
+                    <div class="form-row">
+                        <label>Тема сообщения</label>
+                        <input type="text" name="subject">
+                    </div>
+                    <div class="form-row">
+                        <label>Текст сообщения<span style="color:red;">*</span></label>
+                        <textarea name="message" required></textarea>
+                    </div>
+                    <div class="submit-row">
+                        <button type="submit" class="submit-btn">
+                            <img src="https://via.placeholder.com/16x16/ddd/333?text=✉" alt="Отправить">
+                            отправить
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-warning">
+                    <span>!</span> поля отмеченные <span>*</span><br>
+                    являются обязательными<br>
+                    для заполнения
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ФУТЕР (ПУТЬ ../ к PNG) -->
+    <footer class="footer">
+        <div class="footer-left">
+            <strong>© 2002 НТВ-МИР</strong><br>
+            ПРИ ИСПОЛЬЗОВАНИИ МАТЕРИАЛОВ<br>
+            ССЫЛКА НА НТВ-МИР ОБЯЗАТЕЛЬНА
+        </div>
+        <div class="footer-center">
+            <div class="footer-links">
+                <a href="../index.html">Главная</a> |
+                <a href="about.html">О компании</a> |
+                <a href="schedule.html">Телепрограмма</a> |
+                <a href="support.html">Служба поддержки</a> |
+                <a href="forum.html">Форум</a>
+            </div>
+            <div class="footer-partners">
+                <img src="../reklama.PNG" alt="Партнеры">
+            </div>
+        </div>
+        <div class="footer-right">
+            <div class="footer-phone">+49 69 904756-0</div>
+            <div class="footer-phone-text">ЕВРОПЕЙСКИЙ ИНФОРМАЦИОННЫЙ ЦЕНТР</div>
+        </div>
+    </footer>
+
+</div>
+</body>
+</html>

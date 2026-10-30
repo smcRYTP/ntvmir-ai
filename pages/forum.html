@@ -279,7 +279,13 @@
             .then(() => { alert('Пользователь разбанен!'); })
             .catch((error) => { alert('Ошибка: ' + error.message); });
     };
-
+    window.promptUnban = function() {
+        const uid = prompt('Введите UID пользователя для разбана:');
+        if (uid) {
+            unbanUser(uid.trim());
+        }
+    };
+    
     window.registerUser = function() {
         const email = document.getElementById('authEmail').value.trim();
         const pass = document.getElementById('authPassword').value.trim();

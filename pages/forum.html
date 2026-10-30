@@ -247,13 +247,8 @@
     const auth = getAuth(app);
     const db = getDatabase(app);
     const forumRef = ref(db, 'forum_topics');
-    const usersRef = ref(db, 'users');
 
-    let currentUserName = '';
-    let currentUserAvatar = '';
-    let currentTopicId = null;
-    let isAdmin = false;
-    let currentUserUid = '';
+    let currentUserName = '', currentUserAvatar = '', currentTopicId = null, isAdmin = false, currentUserUid = '';
 
     function getBase64(file) {
         return new Promise((resolve, reject) => {
@@ -264,14 +259,13 @@
         });
     }
 
-    // АДМИН ФУНКЦИИ
-    window.deleteTopic = function(topicId) {
+    window.deleteTopic = function(id) {
         if (!confirm('Удалить тему?')) return;
-        remove(ref(db, 'forum_topics/' + topicId)).then(() => { alert('Тема удалена!'); showTopics(); }).catch(e => alert(e.message));
+        remove(ref(db, 'forum_topics/' + id)).then(() => { alert('Удалено!'); showTopics(); }).catch(e => alert(e.message));
     };
-    window.deleteMessage = function(topicId, messageId) {
+    window.deleteMessage = function(topicId, msgId) {
         if (!confirm('Удалить сообщение?')) return;
-        remove(ref(db, 'forum_topics/' + topicId + '/messages/' + messageId)).then(() => alert('Удалено!')).catch(e => alert(e.message));
+        remove(ref(db, 'forum_topics/' + topicId + '/messages/' + msgId)).then(() => alert('Удалено!')).catch(e => alert(e.message));
     };
     window.banUser = function(uid) {
         if (!uid) return;
@@ -279,13 +273,12 @@
         set(ref(db, 'banned/' + uid), true).then(() => alert('Забанен!')).catch(e => alert(e.message));
     };
 
-    // АВТОРИЗАЦИЯ
     window.registerUser = function() {
         const email = document.getElementById('authEmail').value.trim();
-        const password = document.getElementById('authPassword').value.trim();
+        const pass = document.getElementById('authPassword').value.trim();
         const name = document.getElementById('authName').value.trim();
-        if (!email || !password || !name) { alert('Заполните все поля!'); return; }
-        createUserWithEmailAndPassword(auth, email, password).then((cred) => {
+        if (!email || !pass || !name) { alert('Заполните все поля!'); return; }
+        createUserWithEmailAndPassword(auth, email, pass).then((cred) => {
             const uid = cred.user.uid;
             set(ref(db, 'users/' + uid), { name: name, avatar: '', email: email });
             localStorage.setItem('ntv_forum_name', name);
@@ -297,8 +290,8 @@
 
     window.loginUser = function() {
         const email = document.getElementById('authEmail').value.trim();
-        const password = document.getElementById('authPassword').value.trim();
-        signInWithEmailAndPassword(auth, email, password).then((cred) => {
+        const pass = document.getElementById('authPassword').value.trim();
+        signInWithEmailAndPassword(auth, email, pass).then((cred) => {
             document.getElementById('authStatus').innerText = 'Вход выполнен!';
             updateUI(cred.user);
         }).catch(e => alert(e.message));
@@ -312,10 +305,10 @@
         const user = auth.currentUser;
         if (!user) return;
         const newName = document.getElementById('editName').value.trim();
-        const avatarFile = document.getElementById('editAvatar').files[0];
+        const file = document.getElementById('editAvatar').files[0];
         let updates = {};
         if (newName) { updates.name = newName; localStorage.setItem('ntv_forum_name', newName); currentUserName = newName; }
-        if (avatarFile) { updates.avatar = await getBase64(avatarFile); currentUserAvatar = updates.avatar; }
+        if (file) { updates.avatar = await getBase64(file); currentUserAvatar = updates.avatar; }
         if (Object.keys(updates).length > 0) {
             const uRef = ref(db, 'users/' + user.uid);
             get(uRef).then(snap => {
@@ -329,21 +322,19 @@
         } else alert('Ничего не изменено');
     };
 
-    // РАБОТА С ТЕМАМИ
     window.addTopic = async function() {
         if (!currentUserName) { alert('Войдите!'); return; }
         const banned = await get(ref(db, 'banned/' + currentUserUid));
         if (banned.exists()) { alert('Вы забанены!'); return; }
-
         const title = document.getElementById('topicTitle').value.trim();
         const desc = document.getElementById('topicDesc').value.trim();
-        const imgFile = document.getElementById('topicImage').files[0];
+        const file = document.getElementById('topicImage').files[0];
         if (!title || !desc) { alert('Заполните поля!'); return; }
         const now = new Date();
         const dateStr = String(now.getDate()).padStart(2,'0') + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + now.getFullYear();
-        let imgBase64 = '';
-        if (imgFile) imgBase64 = await getBase64(imgFile);
-        push(forumRef, { title, desc, author: currentUserName, authorUid: currentUserUid, avatar: currentUserAvatar, date: dateStr, image: imgBase64, messages: {} }).then(() => {
+        let img = '';
+        if (file) img = await getBase64(file);
+        push(forumRef, { title, desc, author: currentUserName, authorUid: currentUserUid, avatar: currentUserAvatar, date: dateStr, image: img, messages: {} }).then(() => {
             document.getElementById('topicTitle').value = '';
             document.getElementById('topicDesc').value = '';
             document.getElementById('topicImage').value = '';
@@ -358,25 +349,22 @@
         document.getElementById('topicViewTitle').innerText = title;
         if (auth.currentUser) { document.getElementById('replyBox').style.display = 'block'; document.getElementById('replyLoginMessage').style.display = 'none'; }
         else { document.getElementById('replyBox').style.display = 'none'; document.getElementById('replyLoginMessage').style.display = 'block'; }
-        
         onValue(ref(db, 'forum_topics/' + topicId), (snap) => {
             const data = snap.val();
             if (!data) return;
             const list = document.getElementById('messageList');
-            let adminDel = isAdmin ? `<button class="delete-btn-admin" onclick="deleteTopic('${topicId}')">Удалить тему</button>` : '';
-            list.innerHTML = `<div style="text-align:right; margin-bottom:10px;">${adminDel}</div>`;
-            
+            let adm = isAdmin ? `<button class="delete-btn-admin" onclick="deleteTopic('${topicId}')">Удалить тему</button>` : '';
+            list.innerHTML = `<div style="text-align:right; margin-bottom:10px;">${adm}</div>`;
             let msgs = data.messages || {};
-            const firstMsg = { author: data.author, authorUid: data.authorUid, avatar: data.avatar, date: data.date, text: data.desc, image: data.image };
-            let all = [firstMsg, ...Object.entries(msgs).map(([id, m]) => ({ ...m, id }))];
-            
+            const first = { author: data.author, authorUid: data.authorUid, avatar: data.avatar, date: data.date, text: data.desc, image: data.image };
+            let all = [first, ...Object.entries(msgs).map(([id, m]) => ({ ...m, id }))];
             all.forEach((msg) => {
                 let av = msg.author ? msg.author.charAt(0).toUpperCase() : '?';
                 if (msg.avatar) av = `<img src="${msg.avatar}">`;
                 let img = msg.image ? `<div><img src="${msg.image}" class="msg-image"></div>` : '';
-                let mDel = (isAdmin && msg.id) ? `<button class="delete-btn-admin" onclick="deleteMessage('${topicId}', '${msg.id}')">Удалить</button>` : '';
+                let del = (isAdmin && msg.id) ? `<button class="delete-btn-admin" onclick="deleteMessage('${topicId}', '${msg.id}')">Удалить</button>` : '';
                 let ban = (isAdmin && msg.authorUid) ? `<button class="ban-btn-admin" onclick="banUser('${msg.authorUid}')">Бан</button>` : '';
-                list.innerHTML += `<div class="message-item"><div class="msg-avatar">${av}</div><div class="msg-content"><div class="msg-author">${msg.author} ${ban}</div><div class="msg-date">${msg.date}</div><div class="msg-text">${msg.text}</div>${img}<div style="margin-top:5px;">${mDel}</div></div></div>`;
+                list.innerHTML += `<div class="message-item"><div class="msg-avatar">${av}</div><div class="msg-content"><div class="msg-author">${msg.author} ${ban}</div><div class="msg-date">${msg.date}</div><div class="msg-text">${msg.text}</div>${img}<div style="margin-top:5px;">${del}</div></div></div>`;
             });
         });
     };
@@ -392,15 +380,14 @@
         if (!currentUserName || !currentTopicId) return;
         const banned = await get(ref(db, 'banned/' + currentUserUid));
         if (banned.exists()) { alert('Вы забанены!'); return; }
-
         const text = document.getElementById('replyText').value.trim();
-        const imgFile = document.getElementById('replyImage').files[0];
-        if (!text && !imgFile) { alert('Введите текст или картинку!'); return; }
+        const file = document.getElementById('replyImage').files[0];
+        if (!text && !file) { alert('Введите текст!'); return; }
         const now = new Date();
         const dateStr = String(now.getDate()).padStart(2,'0') + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + now.getFullYear();
-        let imgBase64 = '';
-        if (imgFile) imgBase64 = await getBase64(imgFile);
-        push(ref(db, 'forum_topics/' + currentTopicId + '/messages'), { author: currentUserName, avatar: currentUserAvatar, date: dateStr, text, image: imgBase64 }).then(() => {
+        let img = '';
+        if (file) img = await getBase64(file);
+        push(ref(db, 'forum_topics/' + currentTopicId + '/messages'), { author: currentUserName, avatar: currentUserAvatar, date: dateStr, text, image: img }).then(() => {
             document.getElementById('replyText').value = '';
             document.getElementById('replyImage').value = '';
         }).catch(e => alert(e.message));

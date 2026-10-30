@@ -272,6 +272,13 @@
         if (!confirm('Забанить?')) return;
         set(ref(db, 'banned/' + uid), true).then(() => alert('Забанен!')).catch(e => alert(e.message));
     };
+    window.unbanUser = function(uid) {
+        if (!uid) return;
+        if (!confirm('Разбанить этого пользователя?')) return;
+        remove(ref(db, 'banned/' + uid))
+            .then(() => { alert('Пользователь разбанен!'); })
+            .catch((error) => { alert('Ошибка: ' + error.message); });
+    };
 
     window.registerUser = function() {
         const email = document.getElementById('authEmail').value.trim();

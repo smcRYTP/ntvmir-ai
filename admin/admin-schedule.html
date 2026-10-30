@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Телепрограмма (Управление)</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Tahoma, Arial, sans-serif; font-size: 11px; margin: 10px; }
+        .top-panel { background: #009933; color: #fff; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; border: 1px solid #006622; margin-bottom: 15px; position: relative; }
+        .back-btn { position: absolute; left: 10px; color: #fff; text-decoration: underline; font-size: 12px; }
+        .form-box { border: 1px solid #ccc; padding: 10px; background: #f9f9f9; }
+        .form-row { display: flex; margin-bottom: 8px; }
+        .form-row label { width: 100px; font-weight: bold; }
+        .form-row input { flex: 1; border: 1px solid #999; padding: 3px; }
+        .btn { background: #ddd; border: 1px solid #999; padding: 3px 10px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="top-panel"><a href="admin.html" class="back-btn">« Назад в админку</a>Управление телепрограммой</div>
+    <div class="form-box">
+        <div class="form-row"><label>Дата:</label><input type="text" placeholder="дд.мм.гггг"></div>
+        <div class="form-row"><label>Время:</label><input type="text" placeholder="чч:мм"></div>
+        <div class="form-row"><label>Название:</label><input type="text"></div>
+        <div class="form-row"><label>Описание:</label><input type="text"></div>
+        <button class="btn">Добавить в сетку</button>
+    </div>
+</body>
+</html>

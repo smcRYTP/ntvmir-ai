@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Пользователи</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Tahoma, Arial, sans-serif; font-size: 11px; margin: 10px; background: #fff; }
+        
+        .top-panel { background: #009933; color: #fff; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; border: 1px solid #006622; margin-bottom: 15px; position: relative; }
+        .back-btn { position: absolute; left: 10px; color: #fff; text-decoration: underline; font-size: 12px; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 5px; text-align: left; }
+        th { background: #e0e0e0; }
+        tr:nth-child(even) { background: #f9f9f9; }
+    </style>
+</head>
+<body>
+
+    <div class="top-panel">
+        <a href="admin.html" class="back-btn">« Назад в админку</a>
+        Список пользователей
+    </div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Логин</th>
+                <th>E-mail</th>
+                <th>Роль</th>
+                <th>Дата регистрации</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr><td>1</td><td>admin</td><td>admin@ntv.ru</td><td>Администратор</td><td>01.01.2024</td></tr>
+            <tr><td>2</td><td>user123</td><td>user@mail.ru</td><td>Пользователь</td><td>15.03.2024</td></tr>
+            <tr><td>3</td><td>moderator</td><td>mod@ntv.ru</td><td>Модератор</td><td>20.05.2024</td></tr>
+        </tbody>
+    </table>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Дерево страниц</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Tahoma, Arial, sans-serif; font-size: 11px; background-color: #fff; color: #333; margin: 10px; }
+        .top-panel { background: #009933; color: #fff; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; border: 1px solid #006622; margin-bottom: 15px; position: relative; }
+        .back-btn { position: absolute; left: 10px; color: #fff; text-decoration: underline; font-size: 12px; }
+        .content-box { border: 1px solid #ccc; padding: 10px; background: #f9f9f9; }
+        ul { list-style-type: none; padding-left: 20px; }
+        li { margin-bottom: 5px; }
+        li::before { content: "📄 "; margin-right: 5px; }
+    </style>
+</head>
+<body>
+    <div class="top-panel"><a href="admin.html" class="back-btn">« Назад в админку</a>Дерево страниц</div>
+    <div class="content-box">
+        <ul>
+            <li>Главная страница
+                <ul>
+                    <li>О компании</li>
+                    <li>Телепрограмма</li>
+                    <li>Служба поддержки</li>
+                    <li>Форум</li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

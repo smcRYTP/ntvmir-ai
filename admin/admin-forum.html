@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Форум</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Tahoma, Arial, sans-serif; font-size: 11px; margin: 10px; }
+        .top-panel { background: #009933; color: #fff; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; border: 1px solid #006622; margin-bottom: 15px; position: relative; }
+        .back-btn { position: absolute; left: 10px; color: #fff; text-decoration: underline; font-size: 12px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { border: 1px solid #ccc; padding: 5px; }
+        th { background: #e0e0e0; }
+    </style>
+</head>
+<body>
+    <div class="top-panel"><a href="admin.html" class="back-btn">« Назад в админку</a>Управление форумом</div>
+    <table>
+        <tr><th>Тема</th><th>Автор</th><th>Сообщений</th><th>Действие</th></tr>
+        <tr><td>Информация и анонсы</td><td>Admin</td><td>1</td><td><a href="#">Удалить</a></td></tr>
+        <tr><td>Обсуждение канала</td><td>User123</td><td>15</td><td><a href="#">Удалить</a></td></tr>
+    </table>
+</body>
+</html>

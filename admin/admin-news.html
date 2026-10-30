@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Управление новостями</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Tahoma, Arial, sans-serif; font-size: 11px; margin: 10px; background: #fff; }
+        
+        .top-panel { background: #009933; color: #fff; height: 30px; display: flex; align-items: center; justify-content: center; font-weight: 900; font-size: 15px; border: 1px solid #006622; margin-bottom: 15px; position: relative; }
+        .back-btn { position: absolute; left: 10px; color: #fff; text-decoration: underline; font-size: 12px; }
+        
+        .form-box { border: 1px solid #ccc; padding: 10px; background: #f9f9f9; margin-bottom: 20px; }
+        .form-box h3 { margin-bottom: 10px; font-size: 12px; }
+        
+        .form-row { display: flex; margin-bottom: 8px; }
+        .form-row label { width: 100px; font-weight: bold; padding-top: 3px; }
+        .form-row input, .form-row textarea { flex: 1; border: 1px solid #999; padding: 3px; font-family: inherit; font-size: 11px; }
+        
+        .btn { background: #ddd; border: 1px solid #999; padding: 3px 10px; cursor: pointer; font-size: 11px; }
+        .btn:hover { background: #ccc; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #ccc; padding: 5px; text-align: left; }
+        th { background: #e0e0e0; }
+        .delete-btn { color: #cc0000; text-decoration: underline; cursor: pointer; background: none; border: none; font-size: 11px; }
+    </style>
+</head>
+<body>
+
+    <div class="top-panel">
+        <a href="admin.html" class="back-btn">« Назад в админку</a>
+        Управление новостями
+    </div>
+
+    <div class="form-box">
+        <h3>Добавить новость</h3>
+        <div class="form-row">
+            <label>Дата:</label>
+            <input type="text" id="newsDate" placeholder="дд.мм.гггг">
+        </div>
+        <div class="form-row">
+            <label>Заголовок:</label>
+            <input type="text" id="newsTitle">
+        </div>
+        <div class="form-row">
+            <label>Текст:</label>
+            <textarea id="newsText" rows="3"></textarea>
+        </div>
+        <button class="btn" onclick="addNews()">Сохранить новость</button>
+    </div>
+
+    <h3>Список новостей</h3>
+    <table id="newsTable">
+        <thead>
+            <tr>
+                <th>Дата</th>
+                <th>Заголовок</th>
+                <th>Текст</th>
+                <th>Действие</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Сюда будут вставляться новости -->
+        </tbody>
+    </table>
+
+    <script>
+        // Загружаем новости из localStorage или создаем массив по умолчанию
+        let newsList = JSON.parse(localStorage.getItem('ntv_news')) || [
+            { date: '14.01.2003', title: 'Лужков: В Москве пытаются развалить вертикаль власти', text: 'Мэр Москвы Юрий Лужков заявил...' }
+        ];
+
+        function renderNews() {
+            const tbody = document.querySelector('#newsTable tbody');
+            tbody.innerHTML = '';
+            
+            newsList.forEach((news, index) => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${news.date}</td>
+                    <td><strong>${news.title}</strong></td>
+                    <td>${news.text.substring(0, 50)}...</td>
+                    <td><button class="delete-btn" onclick="deleteNews(${index})">Удалить</button></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function addNews() {
+            const date = document.getElementById('newsDate').value;
+            const title = document.getElementById('newsTitle').value;
+            const text = document.getElementById('newsText').value;
+
+            if (!date || !title) {
+                alert('Заполните хотя бы дату и заголовок!');
+                return;
+            }
+
+            newsList.push({ date, title, text });
+            localStorage.setItem('ntv_news', JSON.stringify(newsList));
+            
+            document.getElementById('newsDate').value = '';
+            document.getElementById('newsTitle').value = '';
+            document.getElementById('newsText').value = '';
+
+            renderNews();
+        }
+
+        function deleteNews(index) {
+            if (confirm('Удалить эту новость?')) {
+                newsList.splice(index, 1);
+                localStorage.setItem('ntv_news', JSON.stringify(newsList));
+                renderNews();
+            }
+        }
+
+        renderNews();
+    </script>
+
+</body>
+</html>

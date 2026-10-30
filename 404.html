@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>404 - Страница не найдена - НТВ Мир</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: Tahoma, Arial, sans-serif;
+            font-size: 11px;
+            color: #333;
+            line-height: 1.2;
+            background: repeating-linear-gradient(90deg, #5cb85c, #5cb85c 2px, #4cae4c 2px, #4cae4c 4px);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        a { text-decoration: none; color: #003399; }
+        a:hover { text-decoration: underline; color: #ff0000; }
+        ul { list-style: none; }
+        
+        .wrapper {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #fff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.6);
+            border-left: 1px solid #333;
+            border-right: 1px solid #333;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ШАПКА */
+        .header { position: relative; display: flex; background: #003399; height: 90px; }
+        .logo-container { height: 100%; background: #fff; display: flex; align-items: center; z-index: 5; border-right: 1px solid #ccc; flex-shrink: 0; }
+        .logo-full { width: 115px; height: 100%; object-fit: contain; display: block; }
+        .header-image-container { flex: 1; height: 100%; position: relative; overflow: hidden; background: #003399; }
+        .header-link { display: inline-block; position: absolute; left: 0; top: 0; height: 55px; z-index: 2; cursor: pointer; }
+        .header-bg-img { height: 55px; width: auto; display: block; object-fit: contain; object-position: left top; }
+        .nav-bar { position: absolute; bottom: 0; left: 0; width: 100%; height: 35px; background: #4caf50; display: flex; align-items: center; border-top: 1px solid #3d8b40; border-bottom: 1px solid #3d8b40; z-index: 3; padding-left: 120px; }
+        .nav-menu { display: flex; height: 100%; }
+        .nav-menu li { padding: 0 15px; border-right: 1px solid #3d8b40; display: flex; align-items: center; }
+        .nav-menu li:last-child { border-right: none; }
+        .nav-menu a { color: #fff; font-weight: bold; font-size: 10px; text-transform: uppercase; text-shadow: 1px 1px 0 rgba(0,0,0,0.2); }
+
+        .country-bar { height: 22px; background: linear-gradient(to bottom, #a0c4e8, #8cb4d8); display: flex; align-items: center; justify-content: flex-end; padding-right: 15px; color: #fff; font-weight: bold; font-size: 10px; border-bottom: 1px solid #ccc; }
+        .country-bar span { margin: 0 5px; }
+        .country-bar .arrow { color: #ff0000; font-size: 8px; }
+
+        /* КОНТЕНТ 404 */
+        .main-layout { display: flex; background: #fff; flex: 1; }
+        
+        .content-404 {
+            flex: 1;
+            padding: 50px 20px;
+            text-align: center;
+        }
+
+        .error-code {
+            font-family: Arial, sans-serif;
+            font-size: 120px;
+            font-weight: 900;
+            color: #003399;
+            line-height: 1;
+            margin-bottom: 10px;
+            text-shadow: 4px 4px 0 #a0c4e8;
+        }
+
+        .error-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #cc0000;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .error-desc {
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .error-link {
+            display: inline-block;
+            background: linear-gradient(to bottom, #6fcf6f, #4caf50);
+            color: #fff;
+            font-weight: bold;
+            font-size: 14px;
+            padding: 10px 20px;
+            border: 1px solid #3d8b40;
+            border-radius: 5px;
+            text-transform: uppercase;
+            text-shadow: 1px 1px 0 rgba(0,0,0,0.2);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .error-link:hover {
+            background: linear-gradient(to bottom, #7fe07f, #5cc85c);
+            text-decoration: none;
+        }
+
+        /* ФУТЕР */
+        .footer { background: #104e8b; color: #a0c4e8; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; border-top: 2px solid #003366; margin-top: auto; }
+        .footer-left { width: 250px; line-height: 1.4; }
+        .footer-left strong { color: #fff; font-size: 12px; }
+        .footer-center { text-align: center; flex: 1; display: flex; flex-direction: column; align-items: center; }
+        .footer-links { margin-bottom: 10px; display: flex; justify-content: center; gap: 10px; }
+        .footer-links a { color: #fff; text-decoration: underline; font-size: 11px; }
+        .footer-links a:hover { color: #ffcc00; }
+        .footer-partners img { height: 35px; width: auto; display: block; }
+        .footer-right { background: #4a7ebb; padding: 10px 20px; border-radius: 5px; text-align: center; border: 1px solid #6b9e6b; width: 300px; }
+        .footer-phone { color: #fff; font-size: 20px; font-weight: bold; font-family: Arial, sans-serif; margin-bottom: 2px; }
+        .footer-phone-text { color: #d0e4ff; font-size: 9px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        @media (max-width: 900px) {
+            .header { height: auto; flex-direction: column; }
+            .nav-bar { position: relative; padding-left: 0; }
+            .nav-menu { flex-wrap: wrap; }
+            .header-bg-img { position: relative; width: 100%; height: auto; }
+            .footer { flex-direction: column; gap: 20px; text-align: center; }
+            .footer-left { width: 100%; }
+            .footer-right { width: 100%; }
+            .error-code { font-size: 80px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+    
+    <!-- ШАПКА -->
+    <div class="header">
+        <div class="logo-container">
+            <img src="ntvmir.png" class="logo-full" alt="НТВ МИР" onerror="this.src='https://via.placeholder.com/115x80/ffffff/003399?text=NTVMIR'">
+        </div>
+        <div class="header-image-container">
+            <a href="https://t.me/smcNightik" target="_blank" class="header-link">
+                <img src="t-1234.png" class="header-bg-img" alt="Смотрите лучшее из России">
+            </a>
+        </div>
+        <div class="nav-bar">
+            <ul class="nav-menu">
+                <li><a href="pages/about.html">О КОМПАНИИ</a></li>
+                <li><a href="pages/schedule.html">ТЕЛЕПРОГРАММА</a></li>
+                <li><a href="pages/support.html">СЛУЖБА ПОДДЕРЖКИ</a></li>
+                <li><a href="pages/forum.html">ФОРУМ</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ПОЛОСКА СТРАНЫ -->
+    <div class="country-bar">
+        <span>США</span> <span class="arrow">▶</span> <span>ЕВРОПА</span>
+    </div>
+
+    <!-- КОНТЕНТ 404 -->
+    <div class="main-layout">
+        <div class="content-404">
+            <div class="error-code">404</div>
+            <div class="error-title">Страница не найдена</div>
+            <div class="error-desc">
+                Запрашиваемая вами страница была удалена, перемещена<br>
+                или вы неправильно набрали адрес.
+            </div>
+            <a href="index.html" class="error-link">Вернуться на главную</a>
+        </div>
+    </div>
+
+    <!-- ФУТЕР -->
+    <footer class="footer">
+        <div class="footer-left">
+            <strong>© 2002 НТВ-МИР</strong><br>
+            ПРИ ИСПОЛЬЗОВАНИИ МАТЕРИАЛОВ<br>
+            ССЫЛКА НА НТВ-МИР ОБЯЗАТЕЛЬНА
+        </div>
+        <div class="footer-center">
+            <div class="footer-links">
+                <a href="index.html">Главная</a> |
+                <a href="pages/about.html">О компании</a> |
+                <a href="pages/schedule.html">Телепрограмма</a> |
+                <a href="pages/support.html">Служба поддержки</a> |
+                <a href="pages/forum.html">Форум</a>
+            </div>
+            <div class="footer-partners">
+                <img src="reklama.png" alt="Партнеры" onerror="this.src='https://via.placeholder.com/400x35/104e8b/ffffff?text=reklama.png'">
+            </div>
+        </div>
+        <div class="footer-right">
+            <div class="footer-phone">+49 69 904756-0</div>
+            <div class="footer-phone-text">ЕВРОПЕЙСКИЙ ИНФОРМАЦИОННЫЙ ЦЕНТР</div>
+        </div>
+    </footer>
+
+</div>
+
+</body>
+</html>

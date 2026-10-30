@@ -429,6 +429,9 @@
             get(ref(db, 'admins/' + user.uid)).then(snap => {
                 isAdmin = snap.exists();
                 document.getElementById('adminBadge').style.display = isAdmin ? 'inline' : 'none';
+                if (document.getElementbyId('adminUnbanBtn')) {
+                    document.getElementbyId('adminUnbanBtn').style.display = isAdmin ? 'block' : 'none';
+                }
             });
             if (currentTopicId) { document.getElementById('replyBox').style.display = 'block'; document.getElementById('replyLoginMessage').style.display = 'none'; }
         } else {

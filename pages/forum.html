@@ -157,41 +157,14 @@
                 <div id="authStatus" style="font-size:10px; margin-top:5px; color:green;"></div>
             </div>
 
-            <div class="auth-block" id="profileBlock" style="display:none; background: #e8e8e8; border: 1px solid #a0a0a0;">
-                <div style="display:flex; align-items:center; gap:8px; border-bottom:1px solid #b0b0b0; padding-bottom:5px; margin-bottom:10px;">
-                    <img src="https://via.placeholder.com/20x20/4a90e2/fff?text=👥" alt="users" style="border:1px solid #666;">
-                    <strong style="font-size:11px; color:#333; text-transform:uppercase;">Список пользователей</strong>
+            <div class="auth-block" id="profileBlock" style="display:none;">
+                <h3>ПРОФИЛЬ <span id="adminBadge" class="admin-badge" style="display:none;">ADMIN</span></h3>
+
+                <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
+                    <div class="msg-avatar" id="profileAvatar" style="width:50px; height:50px;">?</div>
+                    <div><strong id="profileNameDisplay">Пользователь</strong><br><span style="font-size:10px; color:#666;" id="profileEmailDisplay"></span></div>
                 </div>
 
-                <div style="font-size:11px; margin-bottom:15px; line-height:1.3;">
-                    Текущий участник — <br><strong style="font-size:13px;" id="profileNameDisplay">...</strong>
-                </div>
-
-                <div style="margin-bottom:10px; cursor:pointer;" onclick="toggleEditProfile()">
-                    <div style="display:flex; align-items:center; gap:8px; color:#003399; font-weight:bold;">
-                        <img src="https://via.placeholder.com/18x18/999/fff?text=📝" alt="edit">
-                        ЛИЧНЫЕ ДАННЫЕ
-                    </div>
-                </div>
-
-                <div id="editProfileForm" style="display:none; background:#fff; border:1px solid #ccc; padding:8px; margin-bottom:10px;">
-                    <label style="font-size:10px;">Имя:</label>
-                    <input type="text" id="editName" style="width:100%; margin-bottom:5px;" placeholder="Новое имя">
-                    <label style="font-size:10px;">Аватар:</label>
-                    <input type="file" id="editAvatar" accept="image/*" style="width:100%; margin-bottom:5px;">
-                    <button class="auth-btn" onclick="saveProfile()" style="background:#ddd; border:1px solid #999; padding:3px; cursor:pointer;">Сохранить</button>
-                </div>
-
-                <button class="auth-btn" id="adminUnbanBtn" style="display:none; background:#ffcccc; margin-bottom:10px;" onclick="promptUnban()">Разбанить пользователя</button>
-
-                <div style="cursor:pointer;" onclick="logoutUser()">
-                    <div style="display:flex; align-items:center; gap:8px; color:#cc0000; font-weight:bold;">
-                        <img src="https://via.placeholder.com/18x18/999/fff?text=🚪" alt="exit">
-                        ВЫХОД
-                    </div>
-                </div>
-            </div>
-                
                 <div class="profile-edit">
                     <label style="font-size:10px;">Изменить имя:</label>
                     <input type="text" id="editName" placeholder="Новое имя">
@@ -348,11 +321,6 @@
 
     window.logoutUser = function() {
         signOut(auth).then(() => { document.getElementById('authStatus').innerText = ''; currentUserAvatar = ''; updateUI(null); });
-    };
-
-    window.toggleEditProfile = function() {
-        const form = document.getElementById('editProfileForm');
-        form.style.display = form.style.display === 'none' ? 'block' : 'none';
     };
 
     window.saveProfile = async function() {

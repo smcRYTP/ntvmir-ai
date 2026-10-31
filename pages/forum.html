@@ -459,7 +459,7 @@
         if (!data) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Нет тем</td></tr>'; return; }
         Object.entries(data).reverse().forEach(([id, t]) => {
             const count = t.messages ? Object.keys(t.messages).length + 1 : 1;
-            tbody.innerHTML += `<tr><td class="icon-cell"><img src="https://via.placeholder.com/16x16/aaa/fff?text=📄"></td><td><div class="topic-title"><a href="#" onclick="openTopic('${id}', '${t.title.replace(/'/g, "\\'")}')">${t.title}</a></div><div class="topic-desc">${t.desc.substring(0,80)}...<br><i style="font-size:9px;color:#999;">Автор: ${t.author}</i></div></td><td class="count-cell">${count}</td></tr>`;
+            tbody.innerHTML += `<tr><td><div style="display:flex; align-items:flex-start; gap:8px;"><img src="https://via.placeholder.com/16x16/aaa/fff?text=📄" style="margin-top:2px;"><div><div class="topic-title"><a href="#" onclick="openTopic('${id}', '${t.title.replace(/'/g, "\\'")}')">${t.title}</a></div><div class="topic-desc">${t.desc.substring(0,150)}...<br><i style="font-size:9px;color:#999;">Автор: ${t.author}</i></div></div></div></td><td class="count-cell">${count}</td></tr>`;
         });
     });
 </script>

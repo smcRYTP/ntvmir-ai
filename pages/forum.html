@@ -163,6 +163,7 @@
                 <div style="display:flex; gap:10px; align-items:center; margin-bottom:10px;">
                     <div class="msg-avatar" id="profileAvatar" style="width:50px; height:50px;">?</div>
                     <div><strong id="profileNameDisplay">Пользователь</strong><br><span style="font-size:10px; color:#666;" id="profileEmailDisplay"></span></div>
+                    <div style="font-size:10px; color:#cc0000; font-weight:bold; margin-top:2px;" id="profileRoleDisplay"></div>
                 </div>
 
                 <div class="profile-edit">
@@ -302,7 +303,7 @@
         if (!email || !pass || !name) { alert('Заполните все поля!'); return; }
         createUserWithEmailAndPassword(auth, email, pass).then((cred) => {
             const uid = cred.user.uid;
-            set(ref(db, 'users/' + uid), { name: name, avatar: '', email: email });
+            set(ref(db, 'users/' + uid), { name: name, avatar: '', email: email, role: 'Участник' });
             localStorage.setItem('ntv_forum_name', name);
             currentUserName = name;
             document.getElementById('authStatus').innerText = 'Регистрация успешна!';
@@ -430,6 +431,13 @@
                     currentUserName = d.name || 'User';
                     currentUserAvatar = d.avatar || '';
                     document.getElementById('profileNameDisplay').innerText = currentUserName;
+                    if (isAdmin) {
+                        document.getElementById('profileRoleDisplay').innerText = "Администратор форума НТВ Мир";
+                        document.getElementById('profileRoleDisplay').style.color = "#cc0000";
+                    } else {
+                        document.getElementById('profileRoleDisplay').innerText = d.role || "Участник";
+                        document.getElementById('profileRoleDisplay').style.color = "#666";
+                    }
                     document.getElementById('profileEmailDisplay').innerText = d.email;
                     const avD = document.getElementById('profileAvatar');
                     avD.innerHTML = currentUserAvatar ? `<img src="${currentUserAvatar}">` : currentUserName.charAt(0).toUpperCase();

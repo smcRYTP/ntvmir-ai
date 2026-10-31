@@ -67,13 +67,14 @@
         .forum-table th { background: #dff0d8; color: #004000; font-size: 11px; padding: 4px 10px; text-align: center; border-bottom: 1px solid #ccc; font-weight: bold; }
         .forum-table th.topic-col { text-align: left; }
         .forum-table td { padding: 8px 10px; border-bottom: 1px solid #eee; font-size: 11px; vertical-align: middle; }
+        .forum-table td.icon-cell { width: 30px; text-align: center; }
         .topic-title { color: #003399; font-weight: bold; font-size: 12px; line-height: 1.2; margin-bottom: 2px; }
         .topic-title a { color: #003399; text-decoration: none; }
         .topic-title a:hover { text-decoration: underline; color: #ff0000; }
         .topic-desc { color: #333; font-size: 11px; line-height: 1.3; }
         .topic-desc i { font-size: 9px; color: #999; margin-left: 10px; }
         .forum-table td { padding: 4px 10px; vertical-align: top; }
-        .forum-table td.icon-cell { width: 30px; text-align: center; }
+        .forum-table td.icon-cell { width: 20px; padding-top: 6px; }
         .forum-table td.count-cell { width: 60px; text-align: center; color: #333; }
         
         .topic-view { border: 1px solid #ccc; border-top: none; background: #fff; padding: 15px; }
@@ -203,7 +204,7 @@
                     <button class="add-topic-btn" onclick="addTopic()">Создать тему</button>
                 </div>
                 <table class="forum-table" id="forumTable">
-                    <thead><tr><th colspan="2" class="topic-col" style="text-align:left; padding-left:10px;">Темы</th><th>Сообщений</th></tr></thead>
+                    <thead><tr><th colspan="2" class="topic-col">Темы</th><th>Сообщений</th></tr></thead>
                     <tbody></tbody>
                 </table>
             </div>
@@ -458,7 +459,9 @@
         if (!data) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Нет тем</td></tr>'; return; }
         Object.entries(data).reverse().forEach(([id, t]) => {
             const count = t.messages ? Object.keys(t.messages).length + 1 : 1;
-            tbody.innerHTML += `<tr><td colspan="2" style="padding:0; border:none;"><div style="display:flex; align-items:flex-start; padding:8px 10px; border-bottom:1px solid #eee; gap:10px;"><img src="https://via.placeholder.com/16x16/aaa/fff?text=📄" style="margin-top:2px; flex-shrink:0;"><div style="flex:1;"><div class="topic-title"><a href="#" onclick="openTopic('${id}', '${t.title.replace(/'/g, "\\'")}')">${t.title}</a></div><div class="topic-desc">${t.desc.substring(0,150)}... <i style="font-size:9px;color:#999;">Автор: ${t.author}</i></div></div></div></td><td class="count-cell">${count}</td></tr>`;
+            tbody.innerHTML += `<tr><td class="icon-cell"><img src="https://via.placeholder.com/16x16/aaa/fff?text=📄"></td><td><div class="topic-title"><a href="#" onclick="openTopic('${id}', '${t.title.replace(/'/g, "\\'")}')">${t.title}</a></div><div class="topic-desc">${t.desc.substring(0,80)}...<br><i style="font-size:9px;color:#999;">Автор: ${t.author}</i></div></td><td class="count-cell">${count}</td></tr>`;
+        });
+    });
 </script>
 
 </body>

@@ -283,19 +283,14 @@
     };
     window.unbanUser = function(uid) {
         if (!uid) return;
-        if (!confirm('Разбанить этого пользователя?')) return;
-        remove(ref(db, 'banned/' + uid))
-            .then(() => { alert('Пользователь разбанен!'); })
-            .catch((error) => { alert('Ошибка: ' + error.message); });
+        if (!confirm('Разбанить?')) return;
+        remove(ref(db, 'banned/' + uid)).then(() => alert('Разбанен!')).catch(e => alert(e.message));
+    };
+    window.promptUnban = function() {
+        const uid = prompt('Введите UID для разбана:');
+        if (uid) unbanUser(uid.trim());
     };
 
-    window.promptUnban = function() {
-        const uid = prompt('Введите UID пользователя для разбана:');
-        if (uid) {
-            unbanUser(uid.trim());
-        }
-    };
-    
     window.registerUser = function() {
         const email = document.getElementById('authEmail').value.trim();
         const pass = document.getElementById('authPassword').value.trim();
@@ -303,7 +298,7 @@
         if (!email || !pass || !name) { alert('Заполните все поля!'); return; }
         createUserWithEmailAndPassword(auth, email, pass).then((cred) => {
             const uid = cred.user.uid;
-            set(ref(db, 'users/' + uid), { name: name, avatar: '', email: email, role: 'Участник' });
+            set(ref(db, 'users/' + uid), { name: name, avatar: '', email: email });
             localStorage.setItem('ntv_forum_name', name);
             currentUserName = name;
             document.getElementById('authStatus').innerText = 'Регистрация успешна!';
@@ -322,6 +317,11 @@
 
     window.logoutUser = function() {
         signOut(auth).then(() => { document.getElementById('authStatus').innerText = ''; currentUserAvatar = ''; updateUI(null); });
+    };
+
+    window.toggleEditProfile = function() {
+        const form = document.getElementById('editProfileForm');
+        form.style.display = form.style.display === 'none' ? 'block' : 'none';
     };
 
     window.saveProfile = async function() {
@@ -349,39 +349,37 @@
         if (!currentUserName) { alert('Войдите!'); return; }
         const banned = await get(ref(db, 'banned/' + currentUserUid));
         if (banned.exists()) { alert('Вы забанены!'); return; }
-        
         const title = document.getElementById('topicTitle').value.trim();
         const shortDesc = document.getElementById('topicShortDesc').value.trim();
         const firstMsg = document.getElementById('topicFirstMsg').value.trim();
         const file = document.getElementById('topicImage').files[0];
-        
         if (!title || !shortDesc) { alert('Заполните название и описание!'); return; }
-        
         const now = new Date();
         const dateStr = String(now.getDate()).padStart(2,'0') + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + now.getFullYear();
         let img = '';
         if (file) img = await getBase64(file);
         
-        // Отправляем тему с описанием (shortDesc) и первым сообщением (firstMsg)
+        let messagesObj = {};
+        if (firstMsg) {
+            messagesObj.first = {
+                author: currentUserName,
+                authorUid: currentUserUid,
+                avatar: currentUserAvatar,
+                date: dateStr,
+                text: firstMsg,
+                image: img
+            };
+        }
+
         push(forumRef, { 
             title, 
-            desc: shortDesc, // Это для списка тем
+            desc: shortDesc, 
             author: currentUserName, 
             authorUid: currentUserUid, 
             avatar: currentUserAvatar, 
             date: dateStr, 
             image: img, 
-            messages: {
-                // Сразу создаем первое сообщение в обсуждении
-                first: {
-                    author: currentUserName,
-                    authorUid: currentUserUid,
-                    avatar: currentUserAvatar,
-                    date: dateStr,
-                    text: firstMsg,
-                    image: img
-                }
-            } 
+            messages: messagesObj
         }).then(() => {
             document.getElementById('topicTitle').value = '';
             document.getElementById('topicShortDesc').value = '';
@@ -398,23 +396,28 @@
         document.getElementById('topicViewTitle').innerText = title;
         if (auth.currentUser) { document.getElementById('replyBox').style.display = 'block'; document.getElementById('replyLoginMessage').style.display = 'none'; }
         else { document.getElementById('replyBox').style.display = 'none'; document.getElementById('replyLoginMessage').style.display = 'block'; }
+        
         onValue(ref(db, 'forum_topics/' + topicId), (snap) => {
             const data = snap.val();
             if (!data) return;
             const list = document.getElementById('messageList');
             let adm = isAdmin ? `<button class="delete-btn-admin" onclick="deleteTopic('${topicId}')">Удалить тему</button>` : '';
-            list.innerHTML = '
+            
+            list.innerHTML = `
                 <div style="text-align:right; margin-bottom:10px;">${adm}</div>
                 <div style="margin-bottom:15px;">
                     <h2 style="color:#003399; font-size:20px; margin:0 0 5px 0;">${title}</h2>
                     <div style="font-size:13px; color:#555; line-height:1.4; border-bottom:1px solid #ccc; padding-bottom:10px;">${data.desc}</div>
                 </div>
-            ';
+            `;
+            
             let msgs = data.messages || {};
             let all = Object.entries(msgs).map(([id, m]) => ({ ...m, id }));
+            
             if (all.length === 0) {
                 list.innerHTML += `<div style="text-align:center; color:#999; padding:20px;">Пока нет сообщений. Напишите первым!</div>`;
             }
+
             all.forEach((msg) => {
                 let av = msg.author ? msg.author.charAt(0).toUpperCase() : '?';
                 if (msg.avatar) av = `<img src="${msg.avatar}">`;
@@ -445,7 +448,7 @@
         const dateStr = String(now.getDate()).padStart(2,'0') + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + now.getFullYear();
         let img = '';
         if (file) img = await getBase64(file);
-        push(ref(db, 'forum_topics/' + currentTopicId + '/messages'), { author: currentUserName, avatar: currentUserAvatar, date: dateStr, text, image: img }).then(() => {
+        push(ref(db, 'forum_topics/' + currentTopicId + '/messages'), { author: currentUserName, authorUid: currentUserUid, avatar: currentUserAvatar, date: dateStr, text, image: img }).then(() => {
             document.getElementById('replyText').value = '';
             document.getElementById('replyImage').value = '';
         }).catch(e => alert(e.message));
@@ -466,15 +469,6 @@
                     currentUserName = d.name || 'User';
                     currentUserAvatar = d.avatar || '';
                     document.getElementById('profileNameDisplay').innerText = currentUserName;
-                    document.getElementById('profileEmailDisplay').innerText = user.email || '';
-                    if (isAdmin) {
-                        document.getElementById('profileRoleDisplay').innerText = "Администратор форума НТВ Мир";
-                        document.getElementById('profileRoleDisplay').style.color = "#cc0000";
-                    } else {
-                        document.getElementById('profileRoleDisplay').innerText = d.role || "Участник";
-                        document.getElementById('profileRoleDisplay').style.color = "#666";
-                    }
-                    document.getElementById('profileEmailDisplay').innerText = d.email;
                     const avD = document.getElementById('profileAvatar');
                     avD.innerHTML = currentUserAvatar ? `<img src="${currentUserAvatar}">` : currentUserName.charAt(0).toUpperCase();
                 }
@@ -482,8 +476,8 @@
             get(ref(db, 'admins/' + user.uid)).then(snap => {
                 isAdmin = snap.exists();
                 document.getElementById('adminBadge').style.display = isAdmin ? 'inline' : 'none';
-                if (document.getElementbyId('adminUnbanBtn')) {
-                    document.getElementbyId('adminUnbanBtn').style.display = isAdmin ? 'block' : 'none';
+                if (document.getElementById('adminUnbanBtn')) {
+                    document.getElementById('adminUnbanBtn').style.display = isAdmin ? 'block' : 'none';
                 }
             });
             if (currentTopicId) { document.getElementById('replyBox').style.display = 'block'; document.getElementById('replyLoginMessage').style.display = 'none'; }
@@ -502,8 +496,8 @@
         const data = snap.val();
         if (!data) { tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Нет тем</td></tr>'; return; }
         Object.entries(data).reverse().forEach(([id, t]) => {
-            const count = t.messages ? Object.keys(t.messages).length + 1 : 1;
-            tbody.innerHTML += `<tr><td class="icon-cell"><img src="https://via.placeholder.com/16x16/aaa/fff?text=📄"></td><td><div class="topic-title"><a href="#" onclick="openTopic('${id}', '${t.title.replace(/'/g, "\\'")}')">${t.title}</a></div><div class="topic-desc">${t.desc.substring(0,80)}...<br><i style="font-size:9px;color:#999;">Автор: ${t.author}</i></div></td><td class="count-cell">${count}</td></tr>`;
+            const count = t.messages ? Object.keys(t.messages).length : 0;
+            tbody.innerHTML += `<tr><td><div style="display:flex; align-items:flex-start; gap:8px;"><img src="https://via.placeholder.com/16x16/aaa/fff?text=📄" style="margin-top:2px;"><div><div class="topic-title"><a href="#" onclick="openTopic('${id}', '${t.title.replace(/'/g, "\\'")}')">${t.title}</a></div><div class="topic-desc">${t.desc.substring(0,150)}...<br><i style="font-size:9px;color:#999;">Автор: ${t.author}</i></div></div></div></td><td class="count-cell">${count}</td></tr>`;
         });
     });
 </script>

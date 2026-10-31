@@ -200,7 +200,7 @@
                 <div class="add-topic-box" id="addTopicBox" style="display:none;">
                     <div class="add-topic-row"><input type="text" id="topicTitle" placeholder="Название темы"></div>
                     <div class="add-topic-row"><input type="text" id="topicShortDesc" placeholder="Краткое описание (видно в списке тем)"></div>
-                    <div class="add-topic-row"><textarea id="topicFirstMsg" placeholder="Первое сообщение (обсуждение)"></textarea></div>
+                    <div class="add-topic-row"><textarea id="topicFirstMsg" placeholder="Первое сообщение (необязательно)"></textarea></div>
                     <div class="add-topic-row"><input type="file" id="topicImage" accept="image/*"></div>
                     <button class="add-topic-btn" onclick="addTopic()">Создать тему</button>
                 </div>
@@ -355,7 +355,7 @@
         const firstMsg = document.getElementById('topicFirstMsg').value.trim();
         const file = document.getElementById('topicImage').files[0];
         
-        if (!title || !shortDesc || !firstMsg) { alert('Заполните все поля!'); return; }
+        if (!title || !shortDesc) { alert('Заполните название и описание!'); return; }
         
         const now = new Date();
         const dateStr = String(now.getDate()).padStart(2,'0') + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + now.getFullYear();
@@ -403,9 +403,18 @@
             if (!data) return;
             const list = document.getElementById('messageList');
             let adm = isAdmin ? `<button class="delete-btn-admin" onclick="deleteTopic('${topicId}')">Удалить тему</button>` : '';
-            list.innerHTML = `<div style="text-align:right; margin-bottom:10px;">${adm}</div>`;
+            list.innerHTML = '
+                <div style="text-align:right; margin-bottom:10px;">${adm}</div>
+                <div style="margin-bottom:15px;">
+                    <h2 style="color:#003399; font-size:20px; margin:0 0 5px 0;">${title}</h2>
+                    <div style="font-size:13px; color:#555; line-height:1.4; border-bottom:1px solid #ccc; padding-bottom:10px;">${data.desc}</div>
+                </div>
+            ';
             let msgs = data.messages || {};
             let all = Object.entries(msgs).map(([id, m]) => ({ ...m, id }));
+            if (all.length === 0) {
+                list.innerHTML += `<div style="text-align:center; color:#999; padding:20px;">Пока нет сообщений. Напишите первым!</div>`;
+            }
             all.forEach((msg) => {
                 let av = msg.author ? msg.author.charAt(0).toUpperCase() : '?';
                 if (msg.avatar) av = `<img src="${msg.avatar}">`;

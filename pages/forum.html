@@ -386,7 +386,8 @@
                 let img = msg.image ? `<div><img src="${msg.image}" class="msg-image"></div>` : '';
                 let del = (isAdmin && msg.id) ? `<button class="delete-btn-admin" onclick="deleteMessage('${topicId}', '${msg.id}')">Удалить</button>` : '';
                 let ban = (isAdmin && msg.authorUid) ? `<button class="ban-btn-admin" onclick="banUser('${msg.authorUid}')">Бан</button>` : '';
-                list.innerHTML += `<div class="message-item"><div class="msg-avatar">${av}</div><div class="msg-content"><div class="msg-author">${msg.author} ${ban} <span style="font-size:9px; font-weight:normal; color:#666; margin-left:5px;">${msg.authorUid === '5tfSNizi2Cc9XAPRMlg3ZYyl6LL2' ? 'Администратор форума НТВ Мир' : 'Участник'}</span></div><div class="msg-date">${msg.date}</div><div class="msg-text">${msg.text}</div>${img}<div style="margin-top:5px;">${del}</div></div></div>`;
+                let userRole = (msg.authorUid === currentUserUid && isAdmin) ? 'Администратор форума НТВ Мир' : 'Участник';
+                list.innerHTML += `<div class="message-item"><div class="msg-avatar">${av}</div><div class="msg-content"><div class="msg-author">${msg.author} ${ban} <span style="font-size:9px; font-weight:normal; color:#666; margin-left:5px;">${userRole}</span></div><div class="msg-date">${msg.date}</div><div class="msg-text">${msg.text}</div>${img}<div style="margin-top:5px;">${del}</div></div></div>`;
             });
         });
     };

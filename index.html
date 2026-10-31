@@ -12,7 +12,15 @@
         .wrapper { width: 100%; max-width: 1400px; margin: 0 auto; background: #fff; box-shadow: 0 0 15px rgba(0,0,0,0.6); border-left: 1px solid #333; border-right: 1px solid #333; flex: 1; display: flex; flex-direction: column; }
         
         /* ШАПКА */
-        .header { position: relative; display: flex; background: #003399; height: 90px; border-top: 4px solid #cc0000; }
+        .header { 
+            position: relative; 
+            display: flex; 
+            background: #003399; 
+            height: 90px; 
+            /* Вот здесь делаем градиентную красную полосу */
+            border-top: 6px solid; 
+            border-image: linear-gradient(to right, #ff6666, #cc0000, #990000) 1;
+        }
         .logo-container { height: 100%; background: #fff; display: flex; align-items: center; z-index: 5; border-right: 1px solid #ccc; flex-shrink: 0; }
         .logo-full { width: 115px; height: 100%; object-fit: contain; display: block; }
         .header-image-container { flex: 1; height: 100%; position: relative; overflow: hidden; background: #003399; }

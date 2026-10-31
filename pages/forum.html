@@ -199,7 +199,8 @@
                 <div class="forum-header-bar"><span>ТЕМЫ ДЛЯ ОБСУЖДЕНИЯ</span></div>
                 <div class="add-topic-box" id="addTopicBox" style="display:none;">
                     <div class="add-topic-row"><input type="text" id="topicTitle" placeholder="Название темы"></div>
-                    <div class="add-topic-row"><textarea id="topicDesc" placeholder="Первое сообщение"></textarea></div>
+                    <div class="add-topic-row"><input type="text" id="topicShortDesc" placeholder="Краткое описание (видно в списке тем)"></div>
+                    <div class="add-topic-row"><textarea id="topicFirstMsg" placeholder="Первое сообщение (обсуждение)"></textarea></div>
                     <div class="add-topic-row"><input type="file" id="topicImage" accept="image/*"></div>
                     <button class="add-topic-btn" onclick="addTopic()">Создать тему</button>
                 </div>
@@ -348,17 +349,43 @@
         if (!currentUserName) { alert('Войдите!'); return; }
         const banned = await get(ref(db, 'banned/' + currentUserUid));
         if (banned.exists()) { alert('Вы забанены!'); return; }
+        
         const title = document.getElementById('topicTitle').value.trim();
-        const desc = document.getElementById('topicDesc').value.trim();
+        const shortDesc = document.getElementById('topicShortDesc').value.trim();
+        const firstMsg = document.getElementById('topicFirstMsg').value.trim();
         const file = document.getElementById('topicImage').files[0];
-        if (!title || !desc) { alert('Заполните поля!'); return; }
+        
+        if (!title || !shortDesc || !firstMsg) { alert('Заполните все поля!'); return; }
+        
         const now = new Date();
         const dateStr = String(now.getDate()).padStart(2,'0') + '.' + String(now.getMonth()+1).padStart(2,'0') + '.' + now.getFullYear();
         let img = '';
         if (file) img = await getBase64(file);
-        push(forumRef, { title, desc, author: currentUserName, authorUid: currentUserUid, avatar: currentUserAvatar, date: dateStr, image: img, messages: {} }).then(() => {
+        
+        // Отправляем тему с описанием (shortDesc) и первым сообщением (firstMsg)
+        push(forumRef, { 
+            title, 
+            desc: shortDesc, // Это для списка тем
+            author: currentUserName, 
+            authorUid: currentUserUid, 
+            avatar: currentUserAvatar, 
+            date: dateStr, 
+            image: img, 
+            messages: {
+                // Сразу создаем первое сообщение в обсуждении
+                first: {
+                    author: currentUserName,
+                    authorUid: currentUserUid,
+                    avatar: currentUserAvatar,
+                    date: dateStr,
+                    text: firstMsg,
+                    image: img
+                }
+            } 
+        }).then(() => {
             document.getElementById('topicTitle').value = '';
-            document.getElementById('topicDesc').value = '';
+            document.getElementById('topicShortDesc').value = '';
+            document.getElementById('topicFirstMsg').value = '';
             document.getElementById('topicImage').value = '';
         }).catch(e => alert(e.message));
     };
@@ -378,8 +405,7 @@
             let adm = isAdmin ? `<button class="delete-btn-admin" onclick="deleteTopic('${topicId}')">Удалить тему</button>` : '';
             list.innerHTML = `<div style="text-align:right; margin-bottom:10px;">${adm}</div>`;
             let msgs = data.messages || {};
-            const first = { author: data.author, authorUid: data.authorUid, avatar: data.avatar, date: data.date, text: data.desc, image: data.image };
-            let all = [first, ...Object.entries(msgs).map(([id, m]) => ({ ...m, id }))];
+            let all = Object.entries(msgs).map(([id, m]) => ({ ...m, id }));
             all.forEach((msg) => {
                 let av = msg.author ? msg.author.charAt(0).toUpperCase() : '?';
                 if (msg.avatar) av = `<img src="${msg.avatar}">`;
